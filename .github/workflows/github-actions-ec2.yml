@@ -10,13 +10,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+      
+      - name: Add Known Hosts
+        run: ssh-keyscan -H ${{ secrets.AWS_INSTANCE_IP }} >> ~/.ssh/known_hosts
+      
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
       
       - name: Install dependencies
-        run: composer install --no-dev
+        run: |
+          composer install --no-dev
+        env:
+          COMPOSER_PROCESS_TIMEOUT: 0
+          COMPOSER_NO_INTERACTION: 1
+          COMPOSER_NO_AUDIT: 1
       
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
@@ -26,4 +39,5 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       
       - name: Deploy to AWS EC2
-        run: ssh ${{ secrets.AWS_INSTANCE_IP }} "cd /var/www/html && git pull && composer install --no-dev && php artisan migrate --force && php artisan optimize"
+        run: |
+          ssh ${{ secrets.AWS_INSTANCE_IP }} "cd /var/www/html && git pull && composer install --no-dev && php artisan migrate --force && php artisan optimize"
