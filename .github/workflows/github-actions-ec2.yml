@@ -27,4 +27,4 @@ jobs:
       
       - name: Deploy to AWS EC2
         run: |
-          ssh ec2-user@${{ secrets.AWS_INSTANCE_IP }} "cd /var/www/html/collage-studio-clone-backend && git checkout main && sudo git stash && sudo git pull && sudo git stash pop && sudo composer install --no-dev && sudo php artisan migrate --force"
+          ssh ec2-user@${{ secrets.AWS_INSTANCE_IP }} "cd /var/www/html/collage-studio-clone-backend && git checkout main && sudo git stash && sudo git pull && sudo git stash pop && sudo composer install --no-dev && sudo php artisan migrate --force && sudo php artisan optimize"
