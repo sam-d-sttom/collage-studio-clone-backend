@@ -11,4 +11,5 @@ Route::get('/user', function (Request $request) {
 
 //products routes
 Route::get('/products', [ProductController::class, 'getProductsByParam']);
-Route::get('/products/featured-categories', [ProductController::class, 'getXNumOfProducts']);
+Route::get('/products/featured-categories', [ProductController::class, 'getFeaturedProducts']);
+Route::get('/singleProduct', [ProductController::class, 'getSingleProduct']);
